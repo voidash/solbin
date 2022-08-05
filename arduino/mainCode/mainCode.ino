@@ -8,6 +8,17 @@
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 
+
+//for get and post request
+#include <ESP8266HTTPClient.h>
+#include <ESP8266WiFi.h>
+#include <WifiClient.h>
+
+const char* ssid = "TP-Link_6DE6";
+const char* password = "AAAAPH69";
+
+String serverName = "http://solanabin.pythonanywhere.com";
+String uid = "1a77d81f-4ed4-45f0-bdf6-c8980cbfac1e";
 // for nodemcu pins 
 #define D0 16
 #define D1 5
@@ -38,18 +49,32 @@
  * ECHO d1
  * TRIGGER d2
  */
+
+
  Servo servo1;
  Servo servo2;
  int angle;
- LiquidCrystal_I2C lcd(0x27, 16, 2);
+ LiquidCrystal_I2C lcd(0x3F, 16, 2);
 
+unsigned long lastTime = 0;
  // for nodemcu
 
 void lcdSetup() {
- Wire.begin(D3,D4);
+
  lcd.begin();
  lcd.home();
  lcd.print("Hello, NodeMCU"); 
+}
+void setupWifi() {
+  WiFi.begin(ssid,password);
+  Serial.println("Connecting");
+  while(WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.print("Connected to WiFi network with IP Address: ");
+  Serial.println(WiFi.localIP());
 }
 
 void attachServo() {
@@ -60,6 +85,7 @@ void attachServo() {
 }
 
 void openDustbin() {
+  int posn = 180;
     for (posn = 180; posn >=90; posn -= 1)            // goes from 0 degrees to 180 degrees
  {                                                                       // in steps of 1 degree
     servo1.write (posn);
@@ -69,6 +95,7 @@ void openDustbin() {
 }
 
 void closeDustbin(){
+  int posn = 90;
       for (posn = 90; posn <=180; posn += 1)            // goes from 0 degrees to 180 degrees
  {                                                                       // in steps of 1 degree
     servo1.write (posn);
@@ -79,21 +106,64 @@ void closeDustbin(){
  
 void setup() {
   Serial.begin(115200);
+  setupWifi();
   //attachServo();
-  lcdSetup();
-  pinMode(LED_BUILTIN, OUTPUT);     // Initialize the LED_BUILTIN pin as an output
+
 }
 
 // the loop function runs over and over again forever
 void loop() {
-  
-  digitalWrite(LED_BUILTIN, LOW);   // Turn the LED on (Note that LOW is the voltage level
-  // but actually the LED is on; this is because
-  // it is active low on the ESP-01)
- 
-  delay(1000);                      // Wait for a second
-  digitalWrite(LED_BUILTIN, HIGH);
- 
-  // Turn the LED off by making the voltage HIGH
-  delay(1000);                      // Wait for two seconds (to demonstrate the active low LED)
+  if((millis() - lastTime) > 5000) {
+    if(WiFi.status() == WL_CONNECTED) {
+      WiFiClient client;
+      HTTPClient http;
+     
+       String serverPath = serverName + "/should_open_dustbin/" + uid + "/";
+       Serial.println(serverPath);
+       http.begin(client, serverPath.c_str());
+       int httpResponseCode = http.GET();
+
+        if(httpResponseCode == 200) {
+          String payload = http.getString();
+          Serial.println(payload);
+          if(payload.indexOf("open") > 0){
+
+            // if we want to open the dustbin
+           // openDustbin();
+           
+            
+//            for(int i =0; i <= 12; i++) {
+//            
+//               // get the load sensor value
+//            // get the height using ultrasonic sensor
+//            // show it on our LCD
+// delay(5000);
+//              
+//            }
+            http.end();
+         
+            String postServerPath = serverName + "/unit_value_history/" + uid + "/";
+              http.begin(client,postServerPath);
+              http.addHeader("Content-Type","application-json");
+              String httpRequestData="{\"weight_value\":4, \"height_value\": 9, \"redeemed\": false}";
+              int postResponseCode = http.POST(httpRequestData);
+              if(postResponseCode == 201) {
+                Serial.println("successfully sent data");
+              }else{
+                Serial.println(http.getString());
+              }
+              Serial.println(postResponseCode);
+            Serial.println("it means open");
+          }
+          
+        }else{
+          Serial.println(httpResponseCode);
+        }
+        http.end();
+       
+    }else{
+      Serial.println("wifi is disconnected");
+    }
+    lastTime = millis();
+  }
 }
