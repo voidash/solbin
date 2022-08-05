@@ -38,8 +38,8 @@
  * ECHO d1
  * TRIGGER d2
  */
- Servo s1;
- Servo s2;
+ Servo servo1;
+ Servo servo2;
  int angle;
  LiquidCrystal_I2C lcd(0x27, 16, 2);
 
@@ -53,29 +53,29 @@ void lcdSetup() {
 }
 
 void attachServo() {
-  s1.attach(D8);
-  s2.attach(D5);
-  s1.write(0);
-  s2.write(0);
+  servo1.attach (D8);  
+  servo2.attach (D5);
+  servo1.write(180);
+  servo2.write(0);
 }
-void rotateServo(int start, int stop, bool shouldIncrease) {
-  if(shouldIncrease) {
-  for(angle = start; angle < stop; angle=angle+1)  
-  {                                  
-    s1.write(angle);               
-    s2.write(angle);
-    delay(15);                   
-  } 
-  }else {
-    for(angle = start; angle > stop; angle=angle-1)  
-  {                                  
-    s1.write(angle);               
-    s2.write(angle);
-    delay(15);                   
-  } 
+
+void openDustbin() {
+    for (posn = 180; posn >=90; posn -= 1)            // goes from 0 degrees to 180 degrees
+ {                                                                       // in steps of 1 degree
+    servo1.write (posn);
+    servo2.write(180-posn);// tell servo to go to position in variable 'pos'
+    delay (10);                                       // waits 10ms for the servo to reach the position
   }
 }
 
+void closeDustbin(){
+      for (posn = 90; posn <=180; posn += 1)            // goes from 0 degrees to 180 degrees
+ {                                                                       // in steps of 1 degree
+    servo1.write (posn);
+    servo2.write(180-posn);// tell servo to go to position in variable 'pos'
+    delay (10);                                       // waits 10ms for the servo to reach the position
+  }
+}
  
 void setup() {
   Serial.begin(115200);
