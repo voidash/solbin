@@ -60,7 +60,19 @@ const Maps = () => {
                   icon={myIcon}
                 >
                   <Popup>
-                    {data.name} <br /> This dustbin keeps {data.type}.
+                    <>
+                      {data.name} <br /> This dustbin keeps {data.dustbin_type}
+                      <h3>
+                        {parseInt((data.weight_filled / data.capacity) * 100)}{" "}
+                        Percent Filled
+                      </h3>
+                      <div>
+                        <ul>
+                          <li>capacity: {data.capacity}</li>
+                          <li>Height Filled: {data.weight_filled}</li>
+                        </ul>
+                      </div>
+                    </>
                   </Popup>
                 </Marker>
               );
