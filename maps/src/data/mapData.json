@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "KU DUstbin",
+    "type": "Paper",
+    "gps": {
+      "latitude": 27.6195,
+      "longitude": 85.5386
+    }
+  },
+  {
+    "id": 2,
+    "name": "Banepa DUstbin",
+    "type": "Bottles",
+    "gps": {
+      "latitude": 27.6253,
+      "longitude": 85.5561
+    }
+  },
+  {
+    "id": 3,
+    "name": "Panauti DUstbin",
+    "type": "Plastics",
+
+    "gps": {
+      "latitude": 27.5829,
+      "longitude": 85.5097
+    }
+  }
+]
