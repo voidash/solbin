@@ -3,30 +3,32 @@ import React from "react";
 // import { TileLayer } from "https://cdn.esm.sh/react-leaflet/TileLayer";
 // import { useMap } from "https://cdn.esm.sh/react-leaflet/hooks";
 import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
-import {useState} from 'react';
-import mapData from "../data/mapData.json";
+import { useState } from "react";
 import L from "leaflet";
-import axios from "axios"
-import marker from "../assets/images/garbage.png";
+import axios from "axios";
+import { useEffect } from "react";
 
-const baseURL= "http://solanabin.pythonanywhere.com"
+import greenMarker from "../assets/images/green.png";
+import redMarker from "../assets/images/red.png";
+import blueMarker from "../assets/images/blue.png";
 
+const baseURL = "http://solanabin.pythonanywhere.com";
 
-const myIcon = new L.Icon({
-  iconUrl: marker,
-  iconRetinaUrl: marker,
-  popupAnchor: [-0, -0],
-  iconSize: [32, 45],
-});
+const icons = {
+  Paper: greenMarker,
+  Plastics: redMarker,
+  Metal: blueMarker,
+};
 const Maps = () => {
-  const [dustbinData,setDustbinData]=useState();
-  axios.get(`${baseURL}/dustbins`)
-  .then( (response)=> {
-    // handle success
-    console.log(response);
-  })
+  const [dustbinData, setDustbinData] = useState([]);
 
-  // console.log(mapData);
+  useEffect(() => {
+    axios.get(`${baseURL}/dustbins`).then((response) => {
+      // handle success
+      setDustbinData(response.data);
+    });
+  }, []);
+
   return (
     <>
       <div className="map">
@@ -40,17 +42,29 @@ const Maps = () => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          {mapData.map((data) => (
-            <Marker
-              key={data.id}
-              position={[data.gps.latitude, data.gps.longitude]}
-              icon={myIcon}
-            >
-              <Popup>
-                {data.name} <br /> This dustbin keeps {data.type}.
-              </Popup>
-            </Marker>
-          ))}
+          {dustbinData !== [] &&
+            dustbinData.map((data) => {
+              const myIcon = new L.Icon({
+                iconUrl: icons[data.dustbin_type],
+                iconRetinaUrl: icons[data.dustbin_type],
+                popupAnchor: [-0, -0],
+                iconSize: [32, 45],
+              });
+              let lat_long = data.latitude_longitude.split(",").map((a) => {
+                return parseFloat(a.substring(0, a.length - 3));
+              });
+              return (
+                <Marker
+                  key={data.id}
+                  position={[lat_long[0], lat_long[1]]}
+                  icon={myIcon}
+                >
+                  <Popup>
+                    {data.name} <br /> This dustbin keeps {data.type}.
+                  </Popup>
+                </Marker>
+              );
+            })}
         </MapContainer>
       </div>
     </>

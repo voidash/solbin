@@ -1,39 +1,23 @@
 import React from "react";
 import { useState } from "react";
-import { MenuIcon, XIcon } from "@heroicons/react/outline";
-import logo from "./pp.png";
+import logo_best from "../assets/images/logo_with_name.png";
+import { DEPLOY_URL } from "../const";
 const Navbar = () => {
-  const [nav, setNav] = useState(false);
-  const handleClick = () => {
-    setNav(!nav);
-  };
+  const [nav, _] = useState(false);
   return (
-    <div className="w-screen h-[80px] z-10 bg-zinc-200 fixed drop-shadow-lg">
+    <div className="w-screen h-[80px] z-10 bg-[#9EBEC0] fixed drop-shadow-lg">
       <div className="px-2 flex justify-between items-center w-full h-full">
         <div className="flex items-center">
           {/* <h1 className="text-3xl font-bold mr-4 sm:text-4xl">E-Dumpster</h1> */}
-          <img src={logo} alt="" className="h-10" />
-          <ul className="hidden md:flex">
-            <li>Home</li>
-            <li>How we work?</li>
-            <li>Marketplace</li>
-            <li>What we buy?</li>
-            <li>What is Sol-Bin?</li>
-            <li>Map</li>
+          <img src={logo_best} alt="" className="h-10" />
+          <ul className="flex">
+            <li>
+              <a href={`${DEPLOY_URL}/home/`}>Home</a>
+            </li>
+            <li>
+              <a href={`${DEPLOY_URL}/marketplace/`}>Marketplace</a>
+            </li>
           </ul>
-        </div>
-        <div className="hidden md:flex pr-4">
-          <button className="border-none bg-transparent text-black mr-4">
-            Sign IN
-          </button>
-          <button className="px-8 py-3">Sign UP</button>
-        </div>
-        <div className="md:hidden" onClick={handleClick}>
-          {!nav ? (
-            <MenuIcon className="w-5  "></MenuIcon>
-          ) : (
-            <XIcon className="w-5"></XIcon>
-          )}
         </div>
       </div>
 
