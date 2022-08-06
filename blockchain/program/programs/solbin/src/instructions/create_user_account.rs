@@ -4,7 +4,6 @@ use crate::instructions::SolbinErrors;
 pub fn create_user_account(
     ctx: Context<CreateUserAccount>,
     handle: String,
-    display_name: String,
 ) -> Result<()> {
     msg!("create new solbin account for bidding");
     require!(handle.len() <= 40, SolbinErrors::UsernameTooLarge);

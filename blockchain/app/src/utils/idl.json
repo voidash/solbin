@@ -1,0 +1,164 @@
+{
+  "version": "0.1.0",
+  "name": "solbin",
+  "instructions": [
+    {
+      "name": "makeBid",
+      "accounts": [
+        {
+          "name": "bid",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solbinAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bidAmount",
+          "type": "u64"
+        },
+        {
+          "name": "itemToBid",
+          "type": "string"
+        },
+        {
+          "name": "solbinAccountBump",
+          "type": "u8"
+        }
+      ],
+      "returns": null
+    },
+    {
+      "name": "createUserAccount",
+      "accounts": [
+        {
+          "name": "solbinAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "handle",
+          "type": "string"
+        }
+      ],
+      "returns": null
+    },
+    {
+      "name": "modifyUserAccount",
+      "accounts": [
+        {
+          "name": "solbinAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "handle",
+          "type": "string"
+        },
+        {
+          "name": "solbinAccountBump",
+          "type": "u8"
+        }
+      ],
+      "returns": null
+    }
+  ],
+  "accounts": [
+    {
+      "name": "SolbinAccountInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "handle",
+            "type": "string"
+          },
+          {
+            "name": "bidCount",
+            "type": "u32"
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Bid",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "walletPubkey",
+            "type": "publicKey"
+          },
+          {
+            "name": "solbinAccountPubkey",
+            "type": "publicKey"
+          },
+          {
+            "name": "bidNumber",
+            "type": "u32"
+          },
+          {
+            "name": "bidAmount",
+            "type": "u64"
+          },
+          {
+            "name": "itemToBid",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "UsernameTooLarge",
+      "msg": "Username handle is too large "
+    }
+  ],
+  "metadata": {
+    "address": "HTzsNmejt7QRqcotnrKEZJaRqyBMnqsKykeFeQWhxdS2"
+  }
+}
