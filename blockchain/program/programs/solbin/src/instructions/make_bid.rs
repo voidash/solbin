@@ -4,6 +4,7 @@ use crate::instructions::SolbinAccountInfo;
 pub fn make_bid(
     ctx: Context<MakeBid>,
     bid_amount: u64,
+    initial_amount: u64,
     item_to_bid: String,
     _solbin_account_bump: u8,
 ) -> Result<()> {
@@ -13,7 +14,7 @@ pub fn make_bid(
     let existing_solbin_account = &mut ctx.accounts.solbin_account;
     existing_solbin_account.bid_count += 1;
 
-    let new_bid = &mut ctx.accounts.bid;
+    let new_bid = &mut ctx.accounts.make_bid;
     new_bid.wallet_pubkey = ctx.accounts.authority.key();
     new_bid.solbin_account_pubkey = existing_solbin_account.key();
     new_bid.bid_number = existing_solbin_account.bid_count;
@@ -40,7 +41,7 @@ pub struct MakeBid<'info> {
         ],
         bump
     )]
-    pub bid: Account<'info, Bid>,
+    pub make_bid: Account<'info, Bid>,
     #[account(
         mut,
         has_one = authority,

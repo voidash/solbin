@@ -1,13 +1,13 @@
 [features]
 seeds = false
-[programs.devnet]
-solbin = "HTzsNmejt7QRqcotnrKEZJaRqyBMnqsKykeFeQWhxdS2"
+[programs.localnet]
+solbin = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "devnet"
+cluster = "localnet"
 wallet = "/home/cdjk/.config/solana/id.json"
 
 [scripts]
