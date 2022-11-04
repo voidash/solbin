@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Dustbin</title>
+</head>
+<style>
+    .dustbin-area {
+        text-align: center;
+    }
+    .opened-dustbin {
+        display: none;
+    }
+    .message {
+        background-color: antiquewhite;
+        font-size: 40px;
+        text-align: center;
+    }
+</style>
+<body>
+    <div class="dustbin-area">
+        <img src="open.png" class="opened-dustbin">
+        <img src="close.png" class="closed-dustbin">
+    </div>
+   <div class="message">closed</div> 
+   <script>
+        let val = 0.1;
+        setInterval(() =>  {
+        let dustbin_state = "close"; 
+        fetch("http://solanabin.pythonanywhere.com/should_open_dustbin/1a77d81f-4ed4-45f0-bdf6-c8980cbfac1e/")
+        .then((response) => response.json())
+        .then((data) => {
+            dustbin_state = data.data;
+            console.log(dustbin_state);
+
+            let opened_dustbin = document.querySelector('.opened-dustbin');
+            let message = document.querySelector('.message');
+            let closed_dustbin = document.querySelector('.closed-dustbin');
+            if(dustbin_state == "close") {
+                opened_dustbin.style.display = "none";
+                closed_dustbin.style.display = "block";
+                message.innerHTML = "Dustbin Closed"
+            }
+            if(dustbin_state == "open") {
+                opened_dustbin.style.display = "block";
+                closed_dustbin.style.display = "none";
+                message.innerHTML = "Dustbin Opened. Adding Mock weight of 0.1 kg and sending";
+            
+                const data_to_send = fetch('http://solanabin.pythonanywhere.com/unit_value_history/1a77d81f-4ed4-45f0-bdf6-c8980cbfac1e/', {
+                    method: 'POST',
+                    headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({"weight_value": val + "", "height_value": "2", "redeemed": false})
+                }).then((resp) => {
+                    val += 0.1;
+                    // finnaly close the dustbin
+                    return resp.json();
+                }).then((data) => {
+                    fetch("http://solanabin.pythonanywhere.com/close_dustbin/1a77d81f-4ed4-45f0-bdf6-c8980cbfac1e/").then((rep) => console.log(rep.json()));
+                    console.log(data);
+                });
+            }
+        });
+        },8000);
+   </script>
+</body>
+</html>
